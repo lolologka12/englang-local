@@ -511,23 +511,53 @@ function Training({ session, speechRate, t }) {
 
   if (loading) return <p className="empty-state">{t('btnLoading')}</p>;
 
+  // Верхняя панель управления теперь всегда видна
+  const topControls = (
+    <div className="training-controls" style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', maxWidth: '400px', margin: '0 auto 20px auto' }}>
+      <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+        <select style={{ flex: 1 }} value={directionMode} onChange={(e) => setDirectionMode(e.target.value)}>
+          <option value="eng-to-ru">{t('trainModeEnRu')}</option>
+          <option value="ru-to-eng">{t('trainModeRuEn')}</option>
+          <option value="random">{t('trainModeRand')}</option>
+        </select>
+
+        {/* НОВЫЙ ВЫПАДАЮЩИЙ СПИСОК ТЕМ */}
+        <select 
+          style={{ flex: 1 }} 
+          value={trainingMode === 'theme' ? currentTheme : trainingMode} 
+          onChange={(e) => {
+            const val = e.target.value;
+            if (val === 'due' || val === 'all') fetchWords(val);
+            else fetchWords('theme', val);
+          }}
+        >
+          <option value="due">📅 {t('finishNew')}</option>
+          <option value="all">📚 {t('finishAll')}</option>
+          {allThemes.length > 0 && (
+            <optgroup label={t('trainThemes')}>
+              {allThemes.map(th => <option key={th} value={th}>{th}</option>)}
+            </optgroup>
+          )}
+        </select>
+      </div>
+      {currentIndex < dueWords.length && (
+        <div className="progress-bar" style={{ textAlign: 'center', margin: 0 }}>{t('trainLeft')} {dueWords.length - currentIndex}</div>
+      )}
+    </div>
+  );
+
   if (currentIndex >= dueWords.length) {
     return (
-      <div className="finish-state">
-        <BrainCircuit size={64} color="#4dabf7" />
-        <h2>{trainingMode === 'due' ? t('finishTitle') : t('finishTitle')}</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', marginTop: '32px' }}>
-          <button className="btn-primary" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('all')}>{t('finishAll')}</button>
-          <button className="btn-outline" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('due')}>{t('finishNew')}</button>
-        </div>
-        {allThemes.length > 0 && (
-          <div style={{ marginTop: '40px' }}>
-            <p style={{ fontSize: '14px', color: '#868e96', marginBottom: '16px' }}>{t('trainThemes')}</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', maxWidth: '400px', margin: '0 auto' }}>
-              {allThemes.map(th => <button key={th} onClick={() => fetchWords('theme', th)} className="theme-btn-train">{th}</button>)}
-            </div>
+      <div className="training-wrapper">
+        {topControls}
+        <div className="finish-state">
+          <BrainCircuit size={64} color="#4dabf7" />
+          <h2>{t('finishTitle')}</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', marginTop: '32px' }}>
+            <button className="btn-primary" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('all')}>{t('finishAll')}</button>
+            <button className="btn-outline" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('due')}>{t('finishNew')}</button>
           </div>
-        )}
+        </div>
       </div>
     );
   }
@@ -538,14 +568,7 @@ function Training({ session, speechRate, t }) {
 
   return (
     <div className="training-wrapper">
-      <div className="training-controls">
-        <select value={directionMode} onChange={(e) => setDirectionMode(e.target.value)}>
-          <option value="eng-to-ru">{t('trainModeEnRu')}</option>
-          <option value="ru-to-eng">{t('trainModeRuEn')}</option>
-          <option value="random">{t('trainModeRand')}</option>
-        </select>
-        <div className="progress-bar">{t('trainLeft')} {dueWords.length - currentIndex}</div>
-      </div>
+      {topControls}
 
       <div className={`flashcard-container ${isFlipped ? 'flipped' : ''}`} onClick={() => setIsFlipped(true)}>
         <div className="flashcard-front">
