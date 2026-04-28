@@ -145,9 +145,14 @@ export default function App() {
   return (
     <div className="app-container">
       <header className="main-header">
-        <div className="logo">
-          <BookOpen size={28} />
-          <h1>{t('appTitle')}</h1>
+        
+        {/* ИСПРАВЛЕНИЕ: Блок для правильного отображения на мобильных (Лого + Выйти) */}
+        <div className="logo-and-logout">
+          <div className="logo">
+            <BookOpen size={28} />
+            <h1>{t('appTitle')}</h1>
+          </div>
+          <button className="btn-outline btn-logout mobile-only" onClick={() => supabase.auth.signOut()}>{t('logout')}</button>
         </div>
         
         <div className="tabs">
@@ -182,7 +187,7 @@ export default function App() {
             <input type="range" min="0.5" max="1.5" step="0.1" value={speechRate} onChange={(e) => setSpeechRate(parseFloat(e.target.value))} />
             <span className="speed-value">{speechRate}x</span>
           </div>
-          <button className="btn-outline btn-logout" onClick={() => supabase.auth.signOut()}>{t('logout')}</button>
+          <button className="btn-outline btn-logout desktop-only" onClick={() => supabase.auth.signOut()}>{t('logout')}</button>
         </div>
       </header>
       
@@ -311,7 +316,15 @@ function Dictionary({ session, speechRate, t }) {
 
       <div className="search-bar">
         <Search size={20} color="#adb5bd" />
-        <input type="text" placeholder={t('search')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} autoComplete="off" />
+        <input 
+          type="text" 
+          placeholder={t('search')} 
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+          name="dict_search_field" 
+          autoComplete="nope" 
+          data-lpignore="true" 
+        />
       </div>
 
       <div className="filters-bar">
@@ -358,10 +371,10 @@ function Dictionary({ session, speechRate, t }) {
               <h3>{t('newWord')}</h3>
               <button className="close-btn" onClick={() => setIsModalOpen(false)}><X size={24} /></button>
             </div>
-            {/* Добавлено autoComplete="off" для блокировки автозаполнения */}
-            <form onSubmit={handleAddWord} className="auth-form" autoComplete="off">
+            {/* ИСПРАВЛЕНИЕ: Добавлены фейковые имена и autoComplete="nope" для обмана мобильных клавиатур */}
+            <form onSubmit={handleAddWord} className="auth-form" role="presentation">
               <div className="input-with-button">
-                <input type="text" placeholder={t('phEng')} value={engWord} onChange={(e) => setEngWord(e.target.value)} required autoComplete="off" />
+                <input type="text" name="dummy_eng_word" placeholder={t('phEng')} value={engWord} onChange={(e) => setEngWord(e.target.value)} required autoComplete="nope" data-lpignore="true" />
                 <button type="button" className="btn-search-img" onClick={handleSearchImages} disabled={isSearching}>{isSearching ? '...' : t('btnPhoto')}</button>
               </div>
               {searchResults.length > 0 && (
@@ -371,9 +384,9 @@ function Dictionary({ session, speechRate, t }) {
                   ))}
                 </div>
               )}
-              <input type="text" placeholder={t('phTrans')} value={translation} onChange={(e) => setTranslation(e.target.value)} required autoComplete="off" />
-              <input type="text" placeholder={t('phPhrase')} value={phrase} onChange={(e) => setPhrase(e.target.value)} autoComplete="off" />
-              <input type="text" list="theme-options" placeholder={t('phTheme')} value={theme} onChange={(e) => setTheme(e.target.value)} autoComplete="off" />
+              <input type="text" name="dummy_trans_word" placeholder={t('phTrans')} value={translation} onChange={(e) => setTranslation(e.target.value)} required autoComplete="nope" data-lpignore="true" />
+              <input type="text" name="dummy_phrase_word" placeholder={t('phPhrase')} value={phrase} onChange={(e) => setPhrase(e.target.value)} autoComplete="nope" data-lpignore="true" />
+              <input type="text" name="dummy_theme_word" list="theme-options" placeholder={t('phTheme')} value={theme} onChange={(e) => setTheme(e.target.value)} autoComplete="nope" data-lpignore="true" />
               <datalist id="theme-options">{uniqueThemes.map((th, i) => <option key={i} value={th} />)}</datalist>
               <button type="submit" className="btn-primary" disabled={loading}>{loading ? t('btnLoading') : t('btnAdd')}</button>
             </form>
@@ -389,12 +402,11 @@ function Dictionary({ session, speechRate, t }) {
               <button className="close-btn" onClick={() => setEditingWord(null)}><X size={24} /></button>
             </div>
             {editingWord.image_url && <div className="edit-image-preview" style={{ backgroundImage: `url(${editingWord.image_url})` }}></div>}
-            {/* Добавлено autoComplete="off" для редактирования */}
-            <form onSubmit={handleUpdateWord} className="auth-form" autoComplete="off">
-              <input type="text" placeholder={t('phEng')} value={editEng} onChange={(e) => setEditEng(e.target.value)} required autoComplete="off" />
-              <input type="text" placeholder={t('phTrans')} value={editTrans} onChange={(e) => setEditTrans(e.target.value)} required autoComplete="off" />
-              <input type="text" placeholder={t('phPhrase')} value={editPhrase} onChange={(e) => setEditPhrase(e.target.value)} autoComplete="off" />
-              <input type="text" list="theme-options" placeholder={t('phTheme')} value={editTheme} onChange={(e) => setEditTheme(e.target.value)} autoComplete="off" />
+            <form onSubmit={handleUpdateWord} className="auth-form" role="presentation">
+              <input type="text" name="edit_eng_word" placeholder={t('phEng')} value={editEng} onChange={(e) => setEditEng(e.target.value)} required autoComplete="nope" data-lpignore="true" />
+              <input type="text" name="edit_trans_word" placeholder={t('phTrans')} value={editTrans} onChange={(e) => setEditTrans(e.target.value)} required autoComplete="nope" data-lpignore="true" />
+              <input type="text" name="edit_phrase_word" placeholder={t('phPhrase')} value={editPhrase} onChange={(e) => setEditPhrase(e.target.value)} autoComplete="nope" data-lpignore="true" />
+              <input type="text" name="edit_theme_word" list="theme-options" placeholder={t('phTheme')} value={editTheme} onChange={(e) => setEditTheme(e.target.value)} autoComplete="nope" data-lpignore="true" />
               <div style={{display: 'flex', gap: '12px', marginTop: '8px'}}>
                 <button type="button" className="btn-outline" style={{padding: '14px', flexShrink: 0, color: '#e03131', borderColor: '#e03131'}} onClick={handleDeleteWord} disabled={loading}><Trash2 size={20} /></button>
                 <button type="submit" className="btn-primary" style={{marginTop: '0'}} disabled={loading}>{loading ? '...' : t('btnSave')}</button>
@@ -710,10 +722,9 @@ function Auth({ t, lang, setLang }) {
         </div>
 
         <h2>{isLogin ? t('authLog') : t('authReg')}</h2>
-        {/* Добавлено autoComplete="off" в форму авторизации */}
-        <form onSubmit={handleAuth} className="auth-form" autoComplete="off">
-          <input type="email" placeholder={t('authEmail')} value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" />
-          <input type="password" placeholder={t('authPass')} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" />
+        <form onSubmit={handleAuth} className="auth-form" autoComplete="nope" role="presentation">
+          <input type="email" placeholder={t('authEmail')} value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="nope" data-lpignore="true" />
+          <input type="password" placeholder={t('authPass')} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" data-lpignore="true" />
           <button className="btn-primary" type="submit" disabled={loading}>{loading ? '...' : isLogin ? t('authBtnLog') : t('authBtnReg')}</button>
         </form>
         <p className="toggle-auth" onClick={() => setIsLogin(!isLogin)}>{isLogin ? t('authTogReg') : t('authTogLog')}</p>
