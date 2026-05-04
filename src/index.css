@@ -259,7 +259,11 @@
     .flashcard-container { height: 420px; }
     .card-content-front h2 { font-size: 32px; }
     .card-content-back h3 { font-size: 26px; }
-    .card-image { height: 160px; }
+    .card-image { 
+      height: 160px; 
+      background-size: contain !important; 
+      background-repeat: no-repeat !important;
+    }
     .rating-buttons { gap: 4px; }
     
     .stats-grid { grid-template-columns: 1fr; }
