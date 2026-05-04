@@ -89,7 +89,15 @@
   .image-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
   .search-img { width: 100%; height: 60px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; opacity: 0.7; }
   .search-img.selected { opacity: 1; border-color: #4dabf7; transform: scale(1.05); }
-  .edit-image-preview { width: 100%; height: 120px; background-size: cover; background-position: center; border-radius: 12px; margin-bottom: 16px;}
+  .edit-image-preview { 
+  width: 100%; 
+  height: 120px; 
+  background-size: contain; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  border-radius: 12px; 
+  margin-bottom: 16px;
+}
   
   .input-with-icon { position: relative; display: flex; align-items: center; width: 100%; }
   .input-with-icon input { width: 100%; padding-right: 44px !important; }
@@ -113,7 +121,15 @@
   .card-content-front { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; padding: 20px; text-align: center;}
   .card-content-front h2 { font-size: 42px; margin: 0; color: #212529; word-break: break-word;}
   .click-hint { position: absolute; bottom: 24px; color: #adb5bd; font-size: 14px; }
-  .card-image { width: 100%; height: 220px; background-size: cover; background-position: center; border-bottom: 1px solid #f1f3f5; }
+  .card-image { 
+  width: 100%; 
+  height: 220px; 
+  background-size: contain; /* Изменили с cover на contain */
+  background-position: center; 
+  background-repeat: no-repeat; /* Чтобы картинка не множилась */
+  background-color: #ffffff; /* Белый фон под картинкой */
+  border-bottom: 1px solid #f1f3f5; 
+}
   .card-content-back { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;}
   .card-content-back h3 { font-size: 32px; color: #4dabf7; margin: 0 0 12px 0; text-align: center; word-break: break-word;}
   .card-content-back .phrase { font-size: 18px; text-align: center; margin-bottom: auto; color: #495057; font-style: italic;}
