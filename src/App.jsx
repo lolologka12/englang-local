@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
-import { Plus, X, BookOpen, BrainCircuit, Filter, BarChart3, Trash2, Search, Volume2, Gauge, Globe, Languages, ArrowRightLeft, ArrowDownToLine } from 'lucide-react';
+import { Plus, X, BookOpen, BrainCircuit, Filter, BarChart3, Trash2, Search, Volume2, Gauge, Globe, Languages, ArrowRightLeft, ArrowDownToLine, Clock, Flame, Settings, Download, Upload, LogOut, User } from 'lucide-react';
 import './App.css';
 
 // =========================================
@@ -8,124 +8,64 @@ import './App.css';
 // =========================================
 const TRANSLATIONS = {
   ru: {
-    appTitle: "Мой Словарь", tabDict: "Словарь", tabTrain: "Тренировка", tabStats: "Статистика", tabTrans: "Переводчик", logout: "Выйти",
+    appTitle: "Мой Словарь", tabDict: "Словарь", tabTrain: "Тренировка", tabStats: "Статистика", tabTrans: "Переводчик", tabSettings: "Настройки", logout: "Выйти",
     search: "Найти слово...", filterAll: "Все темы", sortNew: "Новые", sortEn: "А-Я (Англ)", sortRu: "А-Я (Перевод)",
     emptyDict: "Ничего не найдено.", newWord: "Новое слово", phEng: "Английское слово*", phTrans: "Перевод*", phPhrase: "Пример (необязательно)",
-    phTheme: "Тема (необязательно)", btnAdd: "Добавить", btnSave: "Сохранить", btnLoading: "Загрузка...", btnPhoto: "Фото",
+    phTheme: "Тема (необязательно)", btnAdd: "Добавить", btnSave: "Сохранить", btnLoading: "Загрузка...", btnPhoto: "Фото", customImg: "Или прямая ссылка",
     editTitle: "Характеристика", confirmDel: "Точно удалить слово?", errExists: "уже есть!", errEngReq: "Впиши слово на английском!", errImg: "Ошибка поиска",
     trainModeEnRu: "🇬🇧 Англ ➔ Перевод", trainModeRuEn: "🇷🇺 Перевод ➔ Англ", trainModeRand: "🔀 Вперемешку", trainLeft: "Осталось:",
     clickFlip: "Нажми, чтобы перевернуть", rateAgain: "Снова", rateHard: "Трудно", rateGood: "Хорошо", rateEasy: "Легко",
-    finishTitle: "Отличная работа!", finishAll: "Тренировать ВСЕ", finishNew: "Проверить новые", trainThemes: "Тренировка по темам:",
+    finishTitle: "Отличная работа!", finishAll: "Тренировать ВСЕ", finishNew: "На сегодня", trainThemes: "Тренировка по темам:",
     statTitle: "Твой прогресс", statWords: "Слов:", statLearned: "Выучено навсегда (>21 дня)", statLearning: "В процессе", statNew: "Новые",
     hardTitle: "Самые сложные слова", hardSubAll: "Слова, на которых ты нажимал 'Снова'", hardSubTheme: "Сложные слова в теме", hardEmpty: "Отличная работа, сложных слов нет!",
     themeAnalysis: "Анализ тем", themeSub: "Уровень освоения", tGood: "Хорошо", tOk: "Средне", tHard: "Сложно",
     authLog: "Вход", authReg: "Регистрация", authEmail: "Email", authPass: "Пароль", authBtnLog: "Войти", authBtnReg: "Создать", authTogReg: "Регистрация", authTogLog: "Вход", authOk: "Успешно! Теперь нажми 'Войти'",
-    trPlaceholder: "Введите текст...", trTranslateBtn: "Перевести", trAddDictBtn: "Добавить в словарь", errTrans: "Ошибка перевода"
+    trPlaceholder: "Введите текст...", trTranslateBtn: "Перевести", trAddDictBtn: "Добавить в словарь", errTrans: "Ошибка перевода",
+    timerPrefix: "Новые карточки появятся через:", trainHardBtn: "Тренировать сложные", sessionTitle: "Итоги тренировки", sessionKnown: "Успешно:", sessionHard: "Ошибки:", sessionReview: "Слова для повторения:", btnClose: "Закрыть",
+    setExportTitle: "Резервная копия (Экспорт)", setExportDesc: "Скачать все слова в формате CSV. Будет скачано 2 файла: технический бекап и простой список для чтения.", btnExport: "Скачать слова",
+    setImportTitle: "Загрузить слова (Импорт)", setImportDesc: "Загрузить список слов из технического CSV файла (бекапа).", btnImport: "Выбрать файл CSV", importOk: "Успешно загружено слов:", importErr: "Ошибка загрузки", importFmtErr: "Неверный формат файла",
+    exportWarn: "Внимание! Сейчас начнется скачивание ДВУХ файлов:\n1. Полный бекап базы (для импорта).\n2. Чистый словарь (для чтения в Excel).\n\nРазрешить скачивание?",
+    setAccount: "Аккаунт", setInterface: "Интерфейс", setLang: "Язык приложения", setSpeed: "Скорость озвучки", setData: "Управление данными"
   },
   uk: {
-    appTitle: "Мій Словник", tabDict: "Словник", tabTrain: "Тренування", tabStats: "Статистика", tabTrans: "Перекладач", logout: "Вийти",
+    appTitle: "Мій Словник", tabDict: "Словник", tabTrain: "Тренування", tabStats: "Статистика", tabTrans: "Перекладач", tabSettings: "Налаштування", logout: "Вийти",
     search: "Знайти слово...", filterAll: "Всі теми", sortNew: "Нові", sortEn: "А-Я (Англ)", sortRu: "А-Я (Переклад)",
     emptyDict: "Нічого не знайдено.", newWord: "Нове слово", phEng: "Англійське слово*", phTrans: "Переклад*", phPhrase: "Приклад (необов'язково)",
-    phTheme: "Тема (необов'язково)", btnAdd: "Додати", btnSave: "Зберегти", btnLoading: "Завантаження...", btnPhoto: "Фото",
+    phTheme: "Тема (необов'язково)", btnAdd: "Додати", btnSave: "Зберегти", btnLoading: "Завантаження...", btnPhoto: "Фото", customImg: "Або посилання на картинку",
     editTitle: "Характеристика", confirmDel: "Точно видалити слово?", errExists: "вже є!", errEngReq: "Впиши слово англійською!", errImg: "Помилка пошуку",
     trainModeEnRu: "🇬🇧 Англ ➔ Переклад", trainModeRuEn: "🇺🇦 Переклад ➔ Англ", trainModeRand: "🔀 Упереміш", trainLeft: "Залишилось:",
     clickFlip: "Натисни, щоб перевернути", rateAgain: "Знову", rateHard: "Важко", rateGood: "Добре", rateEasy: "Легко",
-    finishTitle: "Відмінна робота!", finishAll: "Тренувати ВСІ", finishNew: "Перевірити нові", trainThemes: "Тренування за темами:",
+    finishTitle: "Відмінна робота!", finishAll: "Тренувати ВСІ", finishNew: "На сьогодні", trainThemes: "Тренування за темами:",
     statTitle: "Твій прогрес", statWords: "Слів:", statLearned: "Вивчено назавжди (>21 дня)", statLearning: "В процесі", statNew: "Нові",
     hardTitle: "Найскладніші слова", hardSubAll: "Слова, на яких ти натискав 'Знову'", hardSubTheme: "Складні слова в темі", hardEmpty: "Відмінна робота, складних слів немає!",
     themeAnalysis: "Аналіз тем", themeSub: "Рівень засвоєння", tGood: "Добре", tOk: "Середньо", tHard: "Складно",
     authLog: "Вхід", authReg: "Реєстрація", authEmail: "Email", authPass: "Пароль", authBtnLog: "Увійти", authBtnReg: "Створити", authTogReg: "Реєстрація", authTogLog: "Вхід", authOk: "Успішно! Тепер натисни 'Увійти'",
-    trPlaceholder: "Введіть текст...", trTranslateBtn: "Перекласти", trAddDictBtn: "Додати до словника", errTrans: "Помилка перекладу"
+    trPlaceholder: "Введіть текст...", trTranslateBtn: "Перекласти", trAddDictBtn: "Додати до словника", errTrans: "Помилка перекладу",
+    timerPrefix: "Нові картки з'являться через:", trainHardBtn: "Тренувати складні", sessionTitle: "Підсумки тренування", sessionKnown: "Успішно:", sessionHard: "Помилки:", sessionReview: "Слова для повторення:", btnClose: "Закрити",
+    setExportTitle: "Резервна копія (Експорт)", setExportDesc: "Завантажити всі слова. Буде завантажено 2 файли: технічний бекап і простий список для читання.", btnExport: "Завантажити слова",
+    setImportTitle: "Завантажити слова (Імпорт)", setImportDesc: "Завантажити список слів з технічного CSV файлу (бекапу).", btnImport: "Вибрати файл CSV", importOk: "Успішно завантажено слів:", importErr: "Помилка файлу", importFmtErr: "Невірний формат",
+    exportWarn: "Увага! Зараз почнеться завантаження ДВОХ файлів:\n1. Повний бекап бази (для імпорту).\n2. Чистий словник (для читання в Excel).\n\nДозволити завантаження?",
+    setAccount: "Акаунт", setInterface: "Інтерфейс", setLang: "Мова додатку", setSpeed: "Швидкість озвучення", setData: "Управління даними"
   },
   en: {
-    appTitle: "My Dictionary", tabDict: "Dictionary", tabTrain: "Training", tabStats: "Statistics", tabTrans: "Translator", logout: "Logout",
+    appTitle: "My Dictionary", tabDict: "Dictionary", tabTrain: "Training", tabStats: "Statistics", tabTrans: "Translator", tabSettings: "Settings", logout: "Logout",
     search: "Search word...", filterAll: "All themes", sortNew: "Newest", sortEn: "A-Z (English)", sortRu: "A-Z (Translation)",
     emptyDict: "Nothing found.", newWord: "New Word", phEng: "English word*", phTrans: "Translation*", phPhrase: "Example phrase (optional)",
-    phTheme: "Theme (optional)", btnAdd: "Add", btnSave: "Save", btnLoading: "Loading...", btnPhoto: "Photo",
+    phTheme: "Theme (optional)", btnAdd: "Add", btnSave: "Save", btnLoading: "Loading...", btnPhoto: "Photo", customImg: "Or direct image link",
     editTitle: "Word Details", confirmDel: "Are you sure you want to delete?", errExists: "already exists!", errEngReq: "Enter an English word first!", errImg: "Error searching images",
     trainModeEnRu: "🇬🇧 Eng ➔ Trans", trainModeRuEn: "🔄 Trans ➔ Eng", trainModeRand: "🔀 Random", trainLeft: "Remaining:",
     clickFlip: "Click to flip", rateAgain: "Again", rateHard: "Hard", rateGood: "Good", rateEasy: "Easy",
-    finishTitle: "Great job!", finishAll: "Train ALL words", finishNew: "Check new words", trainThemes: "Train by themes:",
+    finishTitle: "Great job!", finishAll: "Train ALL words", finishNew: "Due today", trainThemes: "Train by themes:",
     statTitle: "Your Progress", statWords: "Words:", statLearned: "Learned forever (>21 days)", statLearning: "Learning", statNew: "New",
     hardTitle: "Hardest Words", hardSubAll: "Words where you clicked 'Again'", hardSubTheme: "Hard words in theme", hardEmpty: "Great job, no hard words!",
     themeAnalysis: "Theme Analysis", themeSub: "Mastery level", tGood: "Good", tOk: "Ok", tHard: "Hard",
     authLog: "Login", authReg: "Register", authEmail: "Email", authPass: "Password", authBtnLog: "Login", authBtnReg: "Create", authTogReg: "Register", authTogLog: "Login", authOk: "Success! Now click 'Login'",
-    trPlaceholder: "Enter text...", trTranslateBtn: "Translate", trAddDictBtn: "Add to dictionary", errTrans: "Translation error"
-  },
-  es: {
-    appTitle: "Mi Diccionario", tabDict: "Diccionario", tabTrain: "Entrenamiento", tabStats: "Estadísticas", tabTrans: "Traductor", logout: "Salir",
-    search: "Buscar palabra...", filterAll: "Todos los temas", sortNew: "Nuevos", sortEn: "A-Z (Inglés)", sortRu: "A-Z (Traducción)",
-    emptyDict: "No se encontró nada.", newWord: "Nueva palabra", phEng: "Palabra en inglés*", phTrans: "Traducción*", phPhrase: "Frase de ejemplo (opcional)",
-    phTheme: "Tema (opcional)", btnAdd: "Añadir", btnSave: "Guardar", btnLoading: "Cargando...", btnPhoto: "Foto",
-    editTitle: "Detalles", confirmDel: "¿Seguro que quieres borrarlo?", errExists: "¡ya existe!", errEngReq: "¡Escribe la palabra en inglés primero!", errImg: "Error al buscar",
-    trainModeEnRu: "🇬🇧 Ing ➔ Trad", trainModeRuEn: "🔄 Trad ➔ Ing", trainModeRand: "🔀 Aleatorio", trainLeft: "Restante:",
-    clickFlip: "Haz clic para girar", rateAgain: "Otra vez", rateHard: "Difícil", rateGood: "Bien", rateEasy: "Fácil",
-    finishTitle: "¡Gran trabajo!", finishAll: "Entrenar TODAS", finishNew: "Revisar nuevas", trainThemes: "Entrenar por temas:",
-    statTitle: "Tu Progreso", statWords: "Palabras:", statLearned: "Aprendidas (>21 días)", statLearning: "Aprendiendo", statNew: "Nuevas",
-    hardTitle: "Palabras difíciles", hardSubAll: "Marcadas 'Otra vez'", hardSubTheme: "Difíciles en tema", hardEmpty: "¡Bien hecho, no hay palabras difíciles!",
-    themeAnalysis: "Análisis de temas", themeSub: "Nivel de dominio", tGood: "Bien", tOk: "Medio", tHard: "Difícil",
-    authLog: "Entrar", authReg: "Registro", authEmail: "Email", authPass: "Contraseña", authBtnLog: "Entrar", authBtnReg: "Crear", authTogReg: "Registro", authTogLog: "Entrar", authOk: "¡Éxito! Ahora pulsa 'Entrar'",
-    trPlaceholder: "Ingrese texto...", trTranslateBtn: "Traducir", trAddDictBtn: "Añadir al diccionario", errTrans: "Error de traducción"
-  },
-  fr: {
-    appTitle: "Mon Dico", tabDict: "Dictionnaire", tabTrain: "Entraînement", tabStats: "Statistiques", tabTrans: "Traducteur", logout: "Quitter",
-    search: "Chercher...", filterAll: "Tous", sortNew: "Nouveaux", sortEn: "A-Z (Anglais)", sortRu: "A-Z (Traduction)",
-    emptyDict: "Rien trouvé.", newWord: "Nouveau mot", phEng: "Mot en anglais*", phTrans: "Traduction*", phPhrase: "Exemple (optionnel)",
-    phTheme: "Thème (optionnel)", btnAdd: "Ajouter", btnSave: "Sauvegarder", btnLoading: "Chargement...", btnPhoto: "Photo",
-    editTitle: "Détails", confirmDel: "Voulez-vous supprimer ?", errExists: "existe déjà !", errEngReq: "Entrez le mot en anglais !", errImg: "Erreur",
-    trainModeEnRu: "🇬🇧 Ang ➔ Trad", trainModeRuEn: "🔄 Trad ➔ Ang", trainModeRand: "🔀 Aléatoire", trainLeft: "Reste:",
-    clickFlip: "Cliquez pour retourner", rateAgain: "Encore", rateHard: "Difficile", rateGood: "Bien", rateEasy: "Facile",
-    finishTitle: "Bon travail !", finishAll: "Entraîner TOUT", finishNew: "Vérifier nouveaux", trainThemes: "Entraîner par thème:",
-    statTitle: "Ton Progrès", statWords: "Mots:", statLearned: "Appris (>21 jours)", statLearning: "En cours", statNew: "Nouveaux",
-    hardTitle: "Mots difficiles", hardSubAll: "Mots 'Encore'", hardSubTheme: "Difficiles du thème", hardEmpty: "Aucun mot difficile !",
-    themeAnalysis: "Analyse des thèmes", themeSub: "Niveau de maîtrise", tGood: "Bien", tOk: "Moyen", tHard: "Difficile",
-    authLog: "Connexion", authReg: "Inscription", authEmail: "Email", authPass: "Mot de passe", authBtnLog: "Connexion", authBtnReg: "Créer", authTogReg: "Inscription", authTogLog: "Connexion", authOk: "Succès ! Cliquez sur 'Connexion'",
-    trPlaceholder: "Entrez le texte...", trTranslateBtn: "Traduire", trAddDictBtn: "Ajouter au dictionnaire", errTrans: "Erreur de traduction"
-  },
-  de: {
-    appTitle: "Mein Wörterbuch", tabDict: "Wörterbuch", tabTrain: "Training", tabStats: "Statistik", tabTrans: "Übersetzer", logout: "Abmelden",
-    search: "Suchen...", filterAll: "Alle Themen", sortNew: "Neu", sortEn: "A-Z (Englisch)", sortRu: "A-Z (Übersetzung)",
-    emptyDict: "Nichts gefunden.", newWord: "Neues Wort", phEng: "Englisches Wort*", phTrans: "Übersetzung*", phPhrase: "Beispielsatz (optional)",
-    phTheme: "Thema (optional)", btnAdd: "Hinzufügen", btnSave: "Speichern", btnLoading: "Laden...", btnPhoto: "Foto",
-    editTitle: "Details", confirmDel: "Wirklich löschen?", errExists: "existiert bereits!", errEngReq: "Englisches Wort eingeben!", errImg: "Fehler",
-    trainModeEnRu: "🇬🇧 Eng ➔ Über", trainModeRuEn: "🔄 Über ➔ Eng", trainModeRand: "🔀 Zufällig", trainLeft: "Übrig:",
-    clickFlip: "Zum Umdrehen klicken", rateAgain: "Nochmal", rateHard: "Schwer", rateGood: "Gut", rateEasy: "Einfach",
-    finishTitle: "Tolle Arbeit!", finishAll: "ALLE trainieren", finishNew: "Neue prüfen", trainThemes: "Nach Themen:",
-    statTitle: "Dein Fortschritt", statWords: "Wörter:", statLearned: "Gelernt (>21 Tage)", statLearning: "Im Prozess", statNew: "Neu",
-    hardTitle: "Schwerste Wörter", hardSubAll: "Wörter mit 'Nochmal'", hardSubTheme: "Schwer im Thema", hardEmpty: "Keine schweren Wörter!",
-    themeAnalysis: "Themen-Analyse", themeSub: "Beherrschungsgrad", tGood: "Gut", tOk: "Mittel", tHard: "Schwer",
-    authLog: "Anmelden", authReg: "Registrieren", authEmail: "E-Mail", authPass: "Passwort", authBtnLog: "Anmelden", authBtnReg: "Erstellen", authTogReg: "Registrieren", authTogLog: "Anmelden", authOk: "Erfolg! Klicke 'Anmelden'",
-    trPlaceholder: "Text eingeben...", trTranslateBtn: "Übersetzen", trAddDictBtn: "Zum Wörterbuch hinzufügen", errTrans: "Übersetzungsfehler"
-  },
-  ja: {
-    appTitle: "私の辞書", tabDict: "辞書", tabTrain: "トレーニング", tabStats: "統計", tabTrans: "翻訳者", logout: "ログアウト",
-    search: "検索...", filterAll: "すべてのテーマ", sortNew: "新しい順", sortEn: "A-Z (英語)", sortRu: "A-Z (翻訳)",
-    emptyDict: "見つかりません。", newWord: "新しい単語", phEng: "英単語*", phTrans: "翻訳*", phPhrase: "例文（任意）",
-    phTheme: "テーマ（任意）", btnAdd: "追加", btnSave: "保存", btnLoading: "ロード中...", btnPhoto: "写真",
-    editTitle: "詳細", confirmDel: "本当に削除しますか？", errExists: "すでに存在します！", errEngReq: "まず英単語を入力してください！", errImg: "エラー",
-    trainModeEnRu: "🇬🇧 英 ➔ 訳", trainModeRuEn: "🔄 訳 ➔ 英", trainModeRand: "🔀 ランダム", trainLeft: "残り:",
-    clickFlip: "クリックして裏返す", rateAgain: "もう一度", rateHard: "難しい", rateGood: "普通", rateEasy: "簡単",
-    finishTitle: "よくできました！", finishAll: "すべてトレーニング", finishNew: "新しい単語を確認", trainThemes: "テーマ別:",
-    statTitle: "進捗状況", statWords: "単語数:", statLearned: "習得済み (>21日)", statLearning: "学習中", statNew: "新規",
-    hardTitle: "苦手な単語", hardSubAll: "「もう一度」を押した単語", hardSubTheme: "テーマ内の苦手な単語", hardEmpty: "苦手な単語はありません！",
-    themeAnalysis: "テーマ分析", themeSub: "習熟度", tGood: "良い", tOk: "普通", tHard: "難しい",
-    authLog: "ログイン", authReg: "登録", authEmail: "メール", authPass: "パスワード", authBtnLog: "ログイン", authBtnReg: "作成", authTogReg: "登録", authTogLog: "ログイン", authOk: "成功！",
-    trPlaceholder: "テキストを入力...", trTranslateBtn: "翻訳する", trAddDictBtn: "辞書に追加", errTrans: "翻訳エラー"
-  },
-  zh: {
-    appTitle: "我的字典", tabDict: "字典", tabTrain: "训练", tabStats: "统计", tabTrans: "翻译", logout: "登出",
-    search: "搜索...", filterAll: "所有主题", sortNew: "最新", sortEn: "A-Z (英语)", sortRu: "A-Z (翻译)",
-    emptyDict: "未找到。", newWord: "新单词", phEng: "英语单词*", phTrans: "翻译*", phPhrase: "例句 (可选)",
-    phTheme: "主题 (可选)", btnAdd: "添加", btnSave: "保存", btnLoading: "加载中...", btnPhoto: "照片",
-    editTitle: "详情", confirmDel: "确定要删除吗？", errExists: "已存在！", errEngReq: "请输入英语单词！", errImg: "错误",
-    trainModeEnRu: "🇬🇧 英 ➔ 译", trainModeRuEn: "🔄 译 ➔ 英", trainModeRand: "🔀 随机", trainLeft: "剩余:",
-    clickFlip: "点击翻转", rateAgain: "重来", rateHard: "困难", rateGood: "良好", rateEasy: "容易",
-    finishTitle: "干得好！", finishAll: "训练所有", finishNew: "检查新词", trainThemes: "按主题训练:",
-    statTitle: "你的进度", statWords: "单词数:", statLearned: "已掌握 (>21天)", statLearning: "学习中", statNew: "新词",
-    hardTitle: "最难单词", hardSubAll: "你点击'重来'的单词", hardSubTheme: "主题中的难词", hardEmpty: "没有难词！",
-    themeAnalysis: "主题分析", themeSub: "掌握程度", tGood: "好", tOk: "中等", tHard: "难",
-    authLog: "登录", authReg: "注册", authEmail: "邮箱", authPass: "密码", authBtnLog: "登录", authBtnReg: "创建", authTogReg: "注册", authTogLog: "登录", authOk: "成功！",
-    trPlaceholder: "输入文本...", trTranslateBtn: "翻译", trAddDictBtn: "添加到字典", errTrans: "翻译错误"
+    trPlaceholder: "Enter text...", trTranslateBtn: "Translate", trAddDictBtn: "Add to dictionary", errTrans: "Translation error",
+    timerPrefix: "New cards available in:", trainHardBtn: "Train Hard Words", sessionTitle: "Session Summary", sessionKnown: "Known:", sessionHard: "Errors:", sessionReview: "Words to review:", btnClose: "Close",
+    setExportTitle: "Backup (Export)", setExportDesc: "Download all words. 2 files will be downloaded: a technical backup and a simple list.", btnExport: "Download Words",
+    setImportTitle: "Upload Words (Import)", setImportDesc: "Upload words from a technical CSV file (backup).", btnImport: "Select CSV File", importOk: "Successfully uploaded words:", importErr: "File upload error", importFmtErr: "Invalid file format",
+    exportWarn: "Attention! TWO files will be downloaded now:\n1. Full database backup (for import).\n2. Clean dictionary (for reading in Excel).\n\nAllow downloads?",
+    setAccount: "Account", setInterface: "Interface", setLang: "App Language", setSpeed: "Voice Speed", setData: "Data Management"
   }
 };
 
@@ -134,9 +74,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dictionary');
   const [speechRate, setSpeechRate] = useState(0.8);
   const [lang, setLang] = useState(() => localStorage.getItem('appLang') || 'ru');
-  
-  // Состояние для передачи слов из Переводчика в Словарь
   const [prefilledWordData, setPrefilledWordData] = useState(null);
+
+  const [dueCount, setDueCount] = useState(0);
+  const [nextReviewDate, setNextReviewDate] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
@@ -144,76 +85,68 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('appLang', lang);
-  }, [lang]);
+  useEffect(() => { localStorage.setItem('appLang', lang); }, [lang]);
 
-  const t = (key) => TRANSLATIONS[lang]?.[key] || TRANSLATIONS['ru'][key] || key;
+  const fetchGlobalStats = async () => {
+    if (!session) return;
+    const today = new Date().toISOString().split('T')[0];
+    const { data } = await supabase.from('words').select('next_review_date');
+    if (data) {
+      const due = data.filter(w => !w.next_review_date || w.next_review_date <= today);
+      setDueCount(due.length);
+      const futureDates = data.filter(w => w.next_review_date > today).map(w => w.next_review_date);
+      setNextReviewDate(futureDates.length > 0 ? futureDates.sort()[0] : null);
+    }
+  };
 
-  // Функция срабатывает, когда в Переводчике жмут "Добавить в словарь"
+  useEffect(() => { fetchGlobalStats(); }, [session, activeTab]);
+
+  const safeLang = TRANSLATIONS[lang] ? lang : 'en';
+  const t = (key) => TRANSLATIONS[safeLang][key] || TRANSLATIONS['en'][key] || key;
+
   const handleTransferToDict = (eng, trans) => {
-    setPrefilledWordData({ eng, trans });
-    setActiveTab('dictionary'); // Автоматически переключаем вкладку
+    setPrefilledWordData({ eng, trans }); setActiveTab('dictionary');
   };
 
   if (!session) return <Auth t={t} lang={lang} setLang={setLang} />;
 
   return (
     <div className="app-container">
-      <header className="main-header">
-        <div className="logo-and-logout">
-          <div className="logo">
-            <BookOpen size={28} />
-            <h1>{t('appTitle')}</h1>
-          </div>
-          <button className="btn-outline btn-logout mobile-only" onClick={() => supabase.auth.signOut()}>{t('logout')}</button>
-        </div>
-        
-        <div className="tabs">
-          <button className={`tab-btn ${activeTab === 'dictionary' ? 'active' : ''}`} onClick={() => setActiveTab('dictionary')}>
-            <BookOpen size={18} /> {t('tabDict')}
-          </button>
-          <button className={`tab-btn ${activeTab === 'training' ? 'active' : ''}`} onClick={() => setActiveTab('training')}>
-            <BrainCircuit size={18} /> {t('tabTrain')}
-          </button>
-          <button className={`tab-btn ${activeTab === 'statistics' ? 'active' : ''}`} onClick={() => setActiveTab('statistics')}>
-            <BarChart3 size={18} /> {t('tabStats')}
-          </button>
-          {/* НОВАЯ ВКЛАДКА: Переводчик */}
-          <button className={`tab-btn ${activeTab === 'translator' ? 'active' : ''}`} onClick={() => setActiveTab('translator')}>
-            <Languages size={18} /> {t('tabTrans')}
-          </button>
-        </div>
-
-        <div className="header-controls">
-          <div className="lang-control">
-            <Globe size={16} color="#868e96" />
-            <select value={lang} onChange={(e) => setLang(e.target.value)}>
-              <option value="uk">🇺🇦 Укр</option>
-              <option value="ru">🇷🇺 Рус</option>
-              <option value="en">🇬🇧 Eng</option>
-              <option value="es">🇪🇸 Esp</option>
-              <option value="fr">🇫🇷 Fra</option>
-              <option value="de">🇩🇪 Deu</option>
-              <option value="ja">🇯🇵 日本語</option>
-              <option value="zh">🇨🇳 中文</option>
-            </select>
-          </div>
-
-          <div className="speed-control">
-            <Gauge size={16} color="#868e96" />
-            <input type="range" min="0.5" max="1.5" step="0.1" value={speechRate} onChange={(e) => setSpeechRate(parseFloat(e.target.value))} />
-            <span className="speed-value">{speechRate}x</span>
-          </div>
-          <button className="btn-outline btn-logout desktop-only" onClick={() => supabase.auth.signOut()}>{t('logout')}</button>
+      {/* ШАПКА ТЕПЕРЬ ЧИСТАЯ, ВСЁ УПРАВЛЕНИЕ В НАСТРОЙКАХ */}
+      <header className="main-header" style={{ borderBottom: 'none', marginBottom: '16px' }}>
+        <div className="logo">
+          <BookOpen size={28} />
+          <h1>{t('appTitle')}</h1>
         </div>
       </header>
       
+      {/* НАВИГАЦИЯ СРАЗУ ПОД ЛОГОТИПОМ */}
+      <div className="tabs" style={{ marginBottom: '24px', width: '100%', maxWidth: '100%' }}>
+        <button className={`tab-btn ${activeTab === 'dictionary' ? 'active' : ''}`} onClick={() => setActiveTab('dictionary')}>
+          <BookOpen size={18} /> <span className="tab-text">{t('tabDict')}</span>
+        </button>
+        <button className={`tab-btn ${activeTab === 'training' ? 'active' : ''} ${dueCount > 0 ? 'tab-has-due' : ''}`} onClick={() => setActiveTab('training')}>
+          <BrainCircuit size={18} /> <span className="tab-text">{t('tabTrain')}</span>
+          {dueCount > 0 && <span className="due-badge">{dueCount}</span>}
+        </button>
+        <button className={`tab-btn ${activeTab === 'statistics' ? 'active' : ''}`} onClick={() => setActiveTab('statistics')}>
+          <BarChart3 size={18} /> <span className="tab-text">{t('tabStats')}</span>
+        </button>
+        <button className={`tab-btn ${activeTab === 'translator' ? 'active' : ''}`} onClick={() => setActiveTab('translator')}>
+          <Languages size={18} /> <span className="tab-text">{t('tabTrans')}</span>
+        </button>
+        <button className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+          <Settings size={18} /> <span className="tab-text">{t('tabSettings')}</span>
+        </button>
+      </div>
+      
       <main className="content">
-        {activeTab === 'dictionary' && <Dictionary session={session} speechRate={speechRate} t={t} prefilledWordData={prefilledWordData} setPrefilledWordData={setPrefilledWordData} />}
-        {activeTab === 'training' && <Training session={session} speechRate={speechRate} t={t} />}
+        {activeTab === 'dictionary' && <Dictionary session={session} speechRate={speechRate} t={t} prefilledWordData={prefilledWordData} setPrefilledWordData={setPrefilledWordData} onUpdateGlobal={fetchGlobalStats} />}
+        {activeTab === 'training' && <Training session={session} speechRate={speechRate} t={t} nextReviewDate={nextReviewDate} onUpdateGlobal={fetchGlobalStats} />}
         {activeTab === 'statistics' && <Statistics session={session} t={t} />}
         {activeTab === 'translator' && <Translator t={t} onTransfer={handleTransferToDict} />}
+        {/* ПЕРЕДАЕМ В НАСТРОЙКИ УПРАВЛЕНИЕ ЯЗЫКОМ И СКОРОСТЬЮ */}
+        {activeTab === 'settings' && <SettingsTab session={session} t={t} lang={lang} setLang={setLang} speechRate={speechRate} setSpeechRate={setSpeechRate} onUpdateGlobal={fetchGlobalStats} />}
       </main>
     </div>
   );
@@ -222,7 +155,7 @@ export default function App() {
 // =========================================
 // 1. СЛОВАРЬ
 // =========================================
-function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWordData }) {
+function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWordData, onUpdateGlobal }) {
   const [words, setWords] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -240,6 +173,9 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
   const [editTrans, setEditTrans] = useState('');
   const [editPhrase, setEditPhrase] = useState('');
   const [editTheme, setEditTheme] = useState('');
+  const [editImage, setEditImage] = useState('');
+  const [editSearchResults, setEditSearchResults] = useState([]);
+  const [isEditSearching, setIsEditSearching] = useState(false);
 
   const [filterTheme, setFilterTheme] = useState('all');
   const [sortBy, setSortBy] = useState('newest'); 
@@ -249,61 +185,63 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
 
   useEffect(() => { fetchWords(); }, []);
 
-  // Ловим переданные данные из переводчика
   useEffect(() => {
     if (prefilledWordData) {
-      setEngWord(prefilledWordData.eng);
-      setTranslation(prefilledWordData.trans);
-      setIsModalOpen(true);
-      setPrefilledWordData(null); // Очищаем после открытия модалки
+      setEngWord(prefilledWordData.eng); setTranslation(prefilledWordData.trans);
+      setIsModalOpen(true); setPrefilledWordData(null);
     }
   }, [prefilledWordData, setPrefilledWordData]);
 
   const fetchWords = async () => {
     const { data, error } = await supabase.from('words').select('*').order('created_at', { ascending: false });
-    if (!error) setWords(data);
+    if (!error) { setWords(data); onUpdateGlobal(); }
   };
 
-  const handleSearchImages = async () => {
-    if (!engWord.trim()) return alert(t('errEngReq'));
-    setIsSearching(true);
+  const searchUnsplash = async (query, setResults, setLoader) => {
+    if (!query.trim()) return alert(t('errEngReq'));
+    setLoader(true);
     try {
-      const res = await fetch(`https://api.unsplash.com/search/photos?query=${engWord.trim()}&per_page=6&orientation=landscape&client_id=${UNSPLASH_KEY}`);
+      const res = await fetch(`https://api.unsplash.com/search/photos?query=${query.trim()}&per_page=6&orientation=landscape&client_id=${UNSPLASH_KEY}`);
       const data = await res.json();
-      setSearchResults(data.results);
+      setResults(data.results);
     } catch (err) { alert(t('errImg')); }
-    setIsSearching(false);
+    setLoader(false);
+  };
+
+  const openGoogleImages = (word) => {
+    if (!word.trim()) return alert(t('errEngReq'));
+    const query = encodeURIComponent(`${word.trim()} clipart`);
+    window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank');
   };
 
   const handleAddWord = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault(); setLoading(true);
     const cleanWord = engWord.trim();
     if (words.some(w => w.english_word.toLowerCase() === cleanWord.toLowerCase())) {
-      alert(`"${cleanWord}" ${t('errExists')}`);
-      setLoading(false); return;
+      alert(`"${cleanWord}" ${t('errExists')}`); setLoading(false); return;
     }
-
     const { error } = await supabase.from('words').insert([{
       user_id: session.user.id, english_word: cleanWord, translation: translation.trim(),
-      example_phrase: phrase.trim(), theme: theme.trim(), image_url: selectedImage,
+      example_phrase: phrase.trim(), theme: theme.trim(), image_url: selectedImage.trim()
     }]);
-
     setLoading(false);
     if (!error) {
-      setEngWord(''); setTranslation(''); setPhrase(''); setTheme('');
-      setSelectedImage(''); setSearchResults([]); setIsModalOpen(false); fetchWords();
+      setEngWord(''); setTranslation(''); setPhrase(''); setTheme(''); setSelectedImage(''); setSearchResults([]); 
+      setIsModalOpen(false); fetchWords();
     }
   };
 
   const openEditModal = (word) => {
-    setEditingWord(word); setEditEng(word.english_word); setEditTrans(word.translation); setEditPhrase(word.example_phrase || ''); setEditTheme(word.theme || '');
+    setEditingWord(word); setEditEng(word.english_word); setEditTrans(word.translation);
+    setEditPhrase(word.example_phrase || ''); setEditTheme(word.theme || ''); 
+    setEditImage(word.image_url || ''); setEditSearchResults([]);
   };
 
   const handleUpdateWord = async (e) => {
     e.preventDefault(); setLoading(true);
     const { error } = await supabase.from('words').update({
-      english_word: editEng.trim(), translation: editTrans.trim(), example_phrase: editPhrase.trim(), theme: editTheme.trim(),
+      english_word: editEng.trim(), translation: editTrans.trim(), example_phrase: editPhrase.trim(), 
+      theme: editTheme.trim(), image_url: editImage.trim()
     }).eq('id', editingWord.id);
     setLoading(false);
     if (!error) { setEditingWord(null); fetchWords(); } else alert(error.message);
@@ -319,15 +257,12 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
 
   const playAudio = (text, e) => {
     e.stopPropagation(); 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; 
-    utterance.rate = speechRate; 
+    const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'en-US'; utterance.rate = speechRate; 
     window.speechSynthesis.speak(utterance);
   };
 
   const uniqueThemes = [...new Set(words.map(w => w.theme).filter(t => t && t.trim() !== ''))];
   let displayedWords = [...words];
-  
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
     displayedWords = displayedWords.filter(w => w.english_word.toLowerCase().includes(q) || w.translation.toLowerCase().includes(q));
@@ -345,15 +280,7 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
 
       <div className="search-bar">
         <Search size={20} color="#adb5bd" />
-        <input 
-          type="text" 
-          placeholder={t('search')} 
-          value={searchQuery} 
-          onChange={(e) => setSearchQuery(e.target.value)} 
-          name="dict_search_field" 
-          autoComplete="nope" 
-          data-lpignore="true" 
-        />
+        <input type="text" placeholder={t('search')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} name="dict_search_field" autoComplete="nope" data-lpignore="true" />
       </div>
 
       <div className="filters-bar">
@@ -398,12 +325,12 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
           <div className="modal-content glass-panel">
             <div className="modal-header">
               <h3>{t('newWord')}</h3>
-              <button className="close-btn" onClick={() => { setIsModalOpen(false); setEngWord(''); setTranslation(''); setPhrase(''); }}><X size={24} /></button>
+              <button className="close-btn" onClick={() => { setIsModalOpen(false); setEngWord(''); setTranslation(''); setPhrase(''); setSelectedImage(''); }}><X size={24} /></button>
             </div>
             <form onSubmit={handleAddWord} className="auth-form" role="presentation">
               <div className="input-with-button">
                 <input type="text" name="dummy_eng_word" placeholder={t('phEng')} value={engWord} onChange={(e) => setEngWord(e.target.value)} required autoComplete="nope" data-lpignore="true" />
-                <button type="button" className="btn-search-img" onClick={handleSearchImages} disabled={isSearching}>{isSearching ? '...' : t('btnPhoto')}</button>
+                <button type="button" className="btn-search-img" onClick={() => searchUnsplash(engWord, setSearchResults, setIsSearching)} disabled={isSearching}>{isSearching ? '...' : t('btnPhoto')}</button>
               </div>
               {searchResults.length > 0 && (
                 <div className="image-results">
@@ -412,6 +339,10 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
                   ))}
                 </div>
               )}
+              <div className="input-with-icon">
+                <input type="text" placeholder={t('customImg')} value={selectedImage} onChange={(e) => setSelectedImage(e.target.value)} style={{fontSize: '13px'}} autoComplete="nope" />
+                <button type="button" className="btn-icon-inside" onClick={() => openGoogleImages(engWord)} title="Искать в Google"><Search size={18} color="#adb5bd" /></button>
+              </div>
               <input type="text" name="dummy_trans_word" placeholder={t('phTrans')} value={translation} onChange={(e) => setTranslation(e.target.value)} required autoComplete="nope" data-lpignore="true" />
               <input type="text" name="dummy_phrase_word" placeholder={t('phPhrase')} value={phrase} onChange={(e) => setPhrase(e.target.value)} autoComplete="nope" data-lpignore="true" />
               <input type="text" name="dummy_theme_word" list="theme-options" placeholder={t('phTheme')} value={theme} onChange={(e) => setTheme(e.target.value)} autoComplete="nope" data-lpignore="true" />
@@ -429,9 +360,23 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
               <h3>{t('editTitle')}</h3>
               <button className="close-btn" onClick={() => setEditingWord(null)}><X size={24} /></button>
             </div>
-            {editingWord.image_url && <div className="edit-image-preview" style={{ backgroundImage: `url(${editingWord.image_url})` }}></div>}
+            {editImage && <div className="edit-image-preview" style={{ backgroundImage: `url(${editImage})` }}></div>}
             <form onSubmit={handleUpdateWord} className="auth-form" role="presentation">
-              <input type="text" name="edit_eng_word" placeholder={t('phEng')} value={editEng} onChange={(e) => setEditEng(e.target.value)} required autoComplete="nope" data-lpignore="true" />
+              <div className="input-with-button">
+                <input type="text" name="edit_eng_word" placeholder={t('phEng')} value={editEng} onChange={(e) => setEditEng(e.target.value)} required autoComplete="nope" data-lpignore="true" />
+                <button type="button" className="btn-search-img" onClick={() => searchUnsplash(editEng, setEditSearchResults, setIsEditSearching)} disabled={isEditSearching}>{isEditSearching ? '...' : t('btnPhoto')}</button>
+              </div>
+              {editSearchResults.length > 0 && (
+                <div className="image-results">
+                  {editSearchResults.map((img) => (
+                    <img key={img.id} src={img.urls.small} className={`search-img ${editImage === img.urls.regular ? 'selected' : ''}`} onClick={() => setEditImage(img.urls.regular)} />
+                  ))}
+                </div>
+              )}
+              <div className="input-with-icon">
+                <input type="text" placeholder={t('customImg')} value={editImage} onChange={(e) => setEditImage(e.target.value)} style={{fontSize: '13px'}} autoComplete="nope" />
+                <button type="button" className="btn-icon-inside" onClick={() => openGoogleImages(editEng)} title="Искать в Google"><Search size={18} color="#adb5bd" /></button>
+              </div>
               <input type="text" name="edit_trans_word" placeholder={t('phTrans')} value={editTrans} onChange={(e) => setEditTrans(e.target.value)} required autoComplete="nope" data-lpignore="true" />
               <input type="text" name="edit_phrase_word" placeholder={t('phPhrase')} value={editPhrase} onChange={(e) => setEditPhrase(e.target.value)} autoComplete="nope" data-lpignore="true" />
               <input type="text" name="edit_theme_word" list="theme-options" placeholder={t('phTheme')} value={editTheme} onChange={(e) => setEditTheme(e.target.value)} autoComplete="nope" data-lpignore="true" />
@@ -448,9 +393,9 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
 }
 
 // =========================================
-// 2. ТРЕНИРОВКА
+// 2. ТРЕНИРОВКА 
 // =========================================
-function Training({ session, speechRate, t }) {
+function Training({ session, speechRate, t, nextReviewDate, onUpdateGlobal }) {
   const [dueWords, setDueWords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -460,6 +405,10 @@ function Training({ session, speechRate, t }) {
   const [allThemes, setAllThemes] = useState([]);
   const [directionMode, setDirectionMode] = useState('eng-to-ru');
   const [currentCardIsEngFront, setCurrentCardIsEngFront] = useState(true);
+  
+  const [timeLeft, setTimeLeft] = useState('');
+  const [sessionLog, setSessionLog] = useState([]);
+  const [showSessionStats, setShowSessionStats] = useState(false);
 
   useEffect(() => {
     supabase.from('words').select('theme').then(({ data }) => {
@@ -474,13 +423,31 @@ function Training({ session, speechRate, t }) {
     else setCurrentCardIsEngFront(Math.random() > 0.5); 
   }, [currentIndex, directionMode, dueWords]);
 
+  useEffect(() => {
+    if (!nextReviewDate || dueWords.length > 0) return;
+    const timer = setInterval(() => {
+      const now = new Date();
+      const target = new Date(nextReviewDate + 'T00:00:00');
+      const diff = target - now;
+      if (diff <= 0) {
+        setTimeLeft('00:00:00'); clearInterval(timer); fetchWords('due'); 
+      } else {
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');
+        const s = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
+        setTimeLeft(`${h}:${m}:${s}`);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [nextReviewDate, dueWords.length]);
+
   const fetchWords = async (mode, themeStr = null) => {
-    setLoading(true);
+    setLoading(true); setShowSessionStats(false); setSessionLog([]);
     const today = new Date().toISOString().split('T')[0];
     let query = supabase.from('words').select('*');
     if (mode === 'due') query = query.or(`next_review_date.lte.${today},next_review_date.is.null`);
+    else if (mode === 'hard') query = query.lt('ease_factor', 2.5);
     else if (mode === 'theme' && themeStr) query = query.eq('theme', themeStr);
-
     const { data, error } = await query;
     if (!error && data) {
       setDueWords(data.sort(() => Math.random() - 0.5));
@@ -491,6 +458,7 @@ function Training({ session, speechRate, t }) {
 
   const handleRate = async (quality) => {
     const word = dueWords[currentIndex];
+    setSessionLog(prev => [...prev, { word, quality }]);
     let ease = word.ease_factor || 2.5; let interval = word.interval || 0;
     if (quality === 1) { ease = Math.max(1.3, ease - 0.2); interval = 1; } 
     else if (quality === 2) { ease = Math.max(1.3, ease - 0.15); interval = interval === 0 ? 1 : Math.round(interval * 1.2); } 
@@ -499,50 +467,57 @@ function Training({ session, speechRate, t }) {
 
     const nextDate = new Date(); nextDate.setDate(nextDate.getDate() + interval);
     await supabase.from('words').update({ interval, ease_factor: ease, next_review_date: nextDate.toISOString().split('T')[0] }).eq('id', word.id);
-    setIsFlipped(false); setTimeout(() => setCurrentIndex(prev => prev + 1), 150);
+    setIsFlipped(false);
+    setTimeout(() => {
+      const nextIdx = currentIndex + 1; setCurrentIndex(nextIdx);
+      if (nextIdx >= dueWords.length && nextIdx > 0) { onUpdateGlobal(); setShowSessionStats(true); }
+    }, 150);
   };
 
   const playAudio = (text, e) => {
-    e.stopPropagation(); 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; utterance.rate = speechRate;
-    window.speechSynthesis.speak(utterance);
+    e.stopPropagation(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'en-US'; utterance.rate = speechRate; window.speechSynthesis.speak(utterance);
   };
 
   if (loading) return <p className="empty-state">{t('btnLoading')}</p>;
 
-  // Верхняя панель управления теперь всегда видна
+  if (showSessionStats && sessionLog.length > 0) {
+    const knownCount = sessionLog.filter(l => l.quality >= 3).length;
+    const knownPercent = Math.round((knownCount / sessionLog.length) * 100);
+    const hardWordsList = sessionLog.filter(l => l.quality <= 2).map(l => l.word);
+    return (
+      <div className="session-stats-container">
+        <div className="glass-panel" style={{ width: '100%', maxWidth: '450px', padding: '30px' }}>
+          <h2 style={{marginTop: 0, textAlign: 'center', color: '#212529'}}>{t('sessionTitle')}</h2>
+          <div className="session-progress">
+            <div className="sp-bar-bg"><div className="sp-bar-fill" style={{ width: `${knownPercent}%` }}></div></div>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '8px', fontSize: '14px', fontWeight: '600'}}>
+              <span style={{color: '#40c057'}}>{t('sessionKnown')} {knownPercent}%</span><span style={{color: '#fa5252'}}>{t('sessionHard')} {100 - knownPercent}%</span>
+            </div>
+          </div>
+          {hardWordsList.length > 0 && (
+            <div className="session-hard-list">
+              <h4 style={{margin: '0 0 12px 0', color: '#495057'}}>{t('sessionReview')}</h4>
+              <div className="hard-words-scroll">{hardWordsList.map((w, i) => (<div key={i} className="session-hw-item"><strong>{w.english_word}</strong><span>{w.translation}</span></div>))}</div>
+            </div>
+          )}
+          <button className="btn-primary" style={{marginTop: '24px'}} onClick={() => setShowSessionStats(false)}>{t('btnClose')}</button>
+        </div>
+      </div>
+    );
+  }
+
   const topControls = (
     <div className="training-controls" style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', maxWidth: '400px', margin: '0 auto 20px auto' }}>
       <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
         <select style={{ flex: 1 }} value={directionMode} onChange={(e) => setDirectionMode(e.target.value)}>
-          <option value="eng-to-ru">{t('trainModeEnRu')}</option>
-          <option value="ru-to-eng">{t('trainModeRuEn')}</option>
-          <option value="random">{t('trainModeRand')}</option>
+          <option value="eng-to-ru">{t('trainModeEnRu')}</option><option value="ru-to-eng">{t('trainModeRuEn')}</option><option value="random">{t('trainModeRand')}</option>
         </select>
-
-        {/* НОВЫЙ ВЫПАДАЮЩИЙ СПИСОК ТЕМ */}
-        <select 
-          style={{ flex: 1 }} 
-          value={trainingMode === 'theme' ? currentTheme : trainingMode} 
-          onChange={(e) => {
-            const val = e.target.value;
-            if (val === 'due' || val === 'all') fetchWords(val);
-            else fetchWords('theme', val);
-          }}
-        >
-          <option value="due">📅 {t('finishNew')}</option>
-          <option value="all">📚 {t('finishAll')}</option>
-          {allThemes.length > 0 && (
-            <optgroup label={t('trainThemes')}>
-              {allThemes.map(th => <option key={th} value={th}>{th}</option>)}
-            </optgroup>
-          )}
+        <select style={{ flex: 1 }} value={trainingMode === 'theme' ? currentTheme : trainingMode} onChange={(e) => { const val = e.target.value; if (['due', 'all', 'hard'].includes(val)) fetchWords(val); else fetchWords('theme', val); }}>
+          <option value="due">📅 {t('finishNew')}</option><option value="all">📚 {t('finishAll')}</option><option value="hard">🔥 {t('trainHardBtn')}</option>
+          {allThemes.length > 0 && <optgroup label={t('trainThemes')}>{allThemes.map(th => <option key={th} value={th}>{th}</option>)}</optgroup>}
         </select>
       </div>
-      {currentIndex < dueWords.length && (
-        <div className="progress-bar" style={{ textAlign: 'center', margin: 0 }}>{t('trainLeft')} {dueWords.length - currentIndex}</div>
-      )}
+      {currentIndex < dueWords.length && <div className="progress-bar" style={{ textAlign: 'center', margin: 0 }}>{t('trainLeft')} {dueWords.length - currentIndex}</div>}
     </div>
   );
 
@@ -551,11 +526,12 @@ function Training({ session, speechRate, t }) {
       <div className="training-wrapper">
         {topControls}
         <div className="finish-state">
-          <BrainCircuit size={64} color="#4dabf7" />
-          <h2>{t('finishTitle')}</h2>
+          {trainingMode === 'due' && timeLeft ? (
+            <div className="timer-box"><Clock size={48} color="#adb5bd" style={{marginBottom: '16px'}} /><p>{t('timerPrefix')}</p><h2 className="timer-text">{timeLeft}</h2></div>
+          ) : (<><BrainCircuit size={64} color="#4dabf7" /><h2>{t('finishTitle')}</h2></>)}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', marginTop: '32px' }}>
-            <button className="btn-primary" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('all')}>{t('finishAll')}</button>
-            <button className="btn-outline" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('due')}>{t('finishNew')}</button>
+            {trainingMode !== 'due' && <button className="btn-primary" style={{ width: '100%', maxWidth: '280px' }} onClick={() => fetchWords('due')}>{t('finishNew')}</button>}
+            <button className="btn-outline-hard" style={{ width: '100%', maxWidth: '280px', display: 'flex', justifyContent: 'center', gap: '8px' }} onClick={() => fetchWords('hard')}><Flame size={18} /> {t('trainHardBtn')}</button>
           </div>
         </div>
       </div>
@@ -569,26 +545,19 @@ function Training({ session, speechRate, t }) {
   return (
     <div className="training-wrapper">
       {topControls}
-
       <div className={`flashcard-container ${isFlipped ? 'flipped' : ''}`} onClick={() => setIsFlipped(true)}>
         <div className="flashcard-front">
           {currentWord.image_url && <div className="card-image" style={{ backgroundImage: `url(${currentWord.image_url})` }}></div>}
           <div className="card-content-front">
             <h2>{frontText}</h2>
-            {currentCardIsEngFront && (
-              <button className="btn-audio-large" onClick={(e) => playAudio(currentWord.english_word, e)}><Volume2 size={28} color="#4dabf7" /></button>
-            )}
+            {currentCardIsEngFront && <button className="btn-audio-large" onClick={(e) => playAudio(currentWord.english_word, e)}><Volume2 size={28} color="#4dabf7" /></button>}
             <p className="click-hint">{t('clickFlip')}</p>
           </div>
         </div>
         <div className="flashcard-back">
           <div className="card-content-back">
             <h3>{backText}</h3>
-            {!currentCardIsEngFront && (
-              <button className="btn-audio-large" style={{ marginTop: '0', marginBottom: '16px', padding: '10px' }} onClick={(e) => playAudio(currentWord.english_word, e)}>
-                <Volume2 size={24} color="#4dabf7" />
-              </button>
-            )}
+            {!currentCardIsEngFront && <button className="btn-audio-large" style={{ marginTop: '0', marginBottom: '16px', padding: '10px' }} onClick={(e) => playAudio(currentWord.english_word, e)}><Volume2 size={24} color="#4dabf7" /></button>}
             {currentWord.example_phrase && <p className="phrase">"{currentWord.example_phrase}"</p>}
             <div className="rating-buttons">
               <button className="rate-btn again" onClick={(e) => { e.stopPropagation(); handleRate(1); }}>{t('rateAgain')}<br/><span>(1 дн)</span></button>
@@ -616,9 +585,7 @@ function Statistics({ session, t }) {
   useEffect(() => {
     async function loadData() {
       const { data } = await supabase.from('words').select('english_word, translation, interval, ease_factor, theme');
-      if (data) {
-        setRawData(data); setUniqueThemes([...new Set(data.map(w => w.theme).filter(th => th && th.trim() !== ''))]);
-      }
+      if (data) { setRawData(data); setUniqueThemes([...new Set(data.map(w => w.theme).filter(th => th && th.trim() !== ''))]); }
       setLoading(false);
     }
     loadData();
@@ -694,8 +661,7 @@ function Statistics({ session, t }) {
             <div className="hard-words-list">
               {stats.hardWords.map((w, i) => (
                 <div key={i} className="hard-word-item">
-                  <span className="hw-eng">{w.english_word}</span>
-                  <span className="hw-ru">{w.translation}</span>
+                  <span className="hw-eng">{w.english_word}</span><span className="hw-ru">{w.translation}</span>
                 </div>
               ))}
             </div>
@@ -730,7 +696,7 @@ function Statistics({ session, t }) {
 }
 
 // =========================================
-// 4. ПЕРЕВОДЧИК (НОВАЯ ВКЛАДКА)
+// 4. ПЕРЕВОДЧИК
 // =========================================
 function Translator({ t, onTransfer }) {
   const [sourceText, setSourceText] = useState('');
@@ -740,9 +706,8 @@ function Translator({ t, onTransfer }) {
   const [isTranslating, setIsTranslating] = useState(false);
 
   const langs = [
-    { code: 'en', name: 'English' }, { code: 'ru', name: 'Русский' },
-    { code: 'uk', name: 'Українська' }, { code: 'es', name: 'Español' },
-    { code: 'fr', name: 'Français' }, { code: 'de', name: 'Deutsch' },
+    { code: 'en', name: 'English' }, { code: 'ru', name: 'Русский' }, { code: 'uk', name: 'Українська' }, 
+    { code: 'es', name: 'Español' }, { code: 'fr', name: 'Français' }, { code: 'de', name: 'Deutsch' },
     { code: 'ja', name: '日本語' }, { code: 'zh', name: '中文' }
   ];
 
@@ -751,20 +716,14 @@ function Translator({ t, onTransfer }) {
     setIsTranslating(true);
     try {
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(sourceText)}`;
-      const res = await fetch(url);
-      const data = await res.json();
+      const res = await fetch(url); const data = await res.json();
       setTranslatedText(data[0][0][0]);
-    } catch (e) {
-      alert(t('errTrans'));
-    }
+    } catch (e) { alert(t('errTrans')); }
     setIsTranslating(false);
   };
 
   const handleSwapLangs = () => {
-    setSourceLang(targetLang);
-    setTargetLang(sourceLang);
-    setSourceText(translatedText);
-    setTranslatedText('');
+    setSourceLang(targetLang); setTargetLang(sourceLang); setSourceText(translatedText); setTranslatedText('');
   };
 
   const handleAddClick = () => {
@@ -779,48 +738,233 @@ function Translator({ t, onTransfer }) {
   return (
     <div className="translator-wrapper">
       <div className="translator-card">
-        
         <div className="trans-controls">
-          <select value={sourceLang} onChange={(e) => setSourceLang(e.target.value)}>
-            {langs.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
-          </select>
-          
-          <button className="btn-icon-swap" onClick={handleSwapLangs}>
-            <ArrowRightLeft size={20} color="#495057" />
-          </button>
-          
-          <select value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>
-            {langs.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
-          </select>
+          <select value={sourceLang} onChange={(e) => setSourceLang(e.target.value)}>{langs.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}</select>
+          <button className="btn-icon-swap" onClick={handleSwapLangs}><ArrowRightLeft size={20} color="#495057" /></button>
+          <select value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>{langs.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}</select>
         </div>
-
         <div className="trans-boxes">
-          <textarea 
-            placeholder={t('trPlaceholder')} 
-            value={sourceText} 
-            onChange={(e) => setSourceText(e.target.value)} 
-          />
+          <textarea placeholder={t('trPlaceholder')} value={sourceText} onChange={(e) => setSourceText(e.target.value)} />
           <div className="trans-divider"></div>
-          <div className="trans-result-box">
-            <p>{translatedText}</p>
-          </div>
+          <div className="trans-result-box"><p>{translatedText}</p></div>
         </div>
-
       </div>
-
       <div className="trans-actions">
-        {translatedText && (
-          <button className="btn-add-dict" onClick={handleAddClick}>
-            <ArrowDownToLine size={20} /> {t('trAddDictBtn')}
-          </button>
-        )}
-        <button className="btn-translate-main" onClick={handleTranslate} disabled={isTranslating}>
-          {isTranslating ? '...' : t('trTranslateBtn')}
-        </button>
+        {translatedText && <button className="btn-add-dict" onClick={handleAddClick}><ArrowDownToLine size={20} /> {t('trAddDictBtn')}</button>}
+        <button className="btn-translate-main" onClick={handleTranslate} disabled={isTranslating}>{isTranslating ? '...' : t('trTranslateBtn')}</button>
       </div>
     </div>
   );
 }
+
+// =========================================
+// 5. НАСТРОЙКИ (ЭКСПОРТ И ИМПОРТ) С ДВОЙНЫМ СКАЧИВАНИЕМ И НОВОЙ ЛОГИКОЙ
+// =========================================
+function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onUpdateGlobal }) {
+  const [loading, setLoading] = useState(false);
+
+  // --- ЭКСПОРТ В 2 CSV ФАЙЛА (С ИСПРАВЛЕНИЕМ КОДИРОВКИ EXCEL) ---
+  const handleExport = async () => {
+    if (!window.confirm(t('exportWarn'))) return;
+    
+    setLoading(true);
+    const { data, error } = await supabase.from('words').select('*').order('created_at', { ascending: true });
+    
+    if (error || !data) {
+      alert("Error fetching data"); setLoading(false); return;
+    }
+
+    // \uFEFF - это BOM (Byte Order Mark). Он заставляет Excel корректно понимать кириллицу (UTF-8).
+    const BOM = "\uFEFF"; 
+
+    // Заголовки для двух файлов
+    let csvBackup = "english_word,translation,example_phrase,theme,image_url,interval,ease_factor,next_review_date\n";
+    let csvSimple = "Слово,Перевод,Пример,Тема\n"; 
+    
+    data.forEach(row => {
+      const escapeCsv = (str) => {
+        if (str == null) return '';
+        const stringVal = String(str);
+        if (stringVal.includes(',') || stringVal.includes('"') || stringVal.includes('\n')) {
+          return `"${stringVal.replace(/"/g, '""')}"`;
+        }
+        return stringVal;
+      };
+
+      // Строка для технического бекапа
+      csvBackup += [
+        escapeCsv(row.english_word), escapeCsv(row.translation), escapeCsv(row.example_phrase),
+        escapeCsv(row.theme), escapeCsv(row.image_url),
+        row.interval || 0, row.ease_factor || 2.5, row.next_review_date || ''
+      ].join(',') + "\n";
+
+      // Строка для чистого словаря
+      csvSimple += [
+        escapeCsv(row.english_word), escapeCsv(row.translation), 
+        escapeCsv(row.example_phrase), escapeCsv(row.theme)
+      ].join(',') + "\n";
+    });
+
+    const downloadFile = (content, filename) => {
+      const blob = new Blob([BOM + content], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
+    const dateStr = new Date().toISOString().split('T')[0];
+    
+    // Скачиваем первый файл (Технический)
+    downloadFile(csvBackup, `dictionary_backup_${dateStr}.csv`);
+    
+    // Задержка 500мс для скачивания второго файла (чтобы браузер не заблокировал)
+    setTimeout(() => {
+      downloadFile(csvSimple, `my_words_list_${dateStr}.csv`);
+      setLoading(false);
+    }, 500);
+  };
+
+  // --- ИМПОРТ ИЗ CSV ---
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    const { data: existingWords } = await supabase.from('words').select('english_word');
+    const existingSet = new Set((existingWords || []).map(w => w.english_word.toLowerCase()));
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target.result;
+      const lines = text.split('\n');
+      
+      if (lines.length < 2 || !lines[0].includes('english_word') || !lines[0].includes('translation')) {
+        alert(t('importFmtErr') + " (Ожидается файл backup, а не простой список)"); setLoading(false); return;
+      }
+
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      const engIdx = headers.indexOf('english_word'); const transIdx = headers.indexOf('translation');
+      const phraseIdx = headers.indexOf('example_phrase'); const themeIdx = headers.indexOf('theme');
+      const imgIdx = headers.indexOf('image_url');
+
+      const newWordsToInsert = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        
+        const row = []; let currentVal = ''; let inQuotes = false;
+        for (let char of lines[i]) {
+          if (char === '"') inQuotes = !inQuotes;
+          else if (char === ',' && !inQuotes) { row.push(currentVal); currentVal = ''; }
+          else currentVal += char;
+        }
+        row.push(currentVal);
+
+        const eng = row[engIdx]?.replace(/^"|"$/g, '').trim();
+        const trans = row[transIdx]?.replace(/^"|"$/g, '').trim();
+
+        if (eng && trans && !existingSet.has(eng.toLowerCase())) {
+          newWordsToInsert.push({
+            user_id: session.user.id, english_word: eng, translation: trans,
+            example_phrase: phraseIdx !== -1 ? row[phraseIdx]?.replace(/^"|"$/g, '').trim() : null,
+            theme: themeIdx !== -1 ? row[themeIdx]?.replace(/^"|"$/g, '').trim() : null,
+            image_url: imgIdx !== -1 ? row[imgIdx]?.replace(/^"|"$/g, '').trim() : null,
+          });
+          existingSet.add(eng.toLowerCase()); 
+        }
+      }
+
+      if (newWordsToInsert.length > 0) {
+        const { error } = await supabase.from('words').insert(newWordsToInsert);
+        if (error) { alert(t('importErr')); } else { alert(`${t('importOk')} ${newWordsToInsert.length}`); onUpdateGlobal(); }
+      } else {
+        alert("0 новых слов найдено (возможно, все уже есть в словаре).");
+      }
+      setLoading(false); e.target.value = null; 
+    };
+    reader.readAsText(file);
+  };
+
+  return (
+    <div className="stats-wrapper">
+      <div className="stats-header">
+        <h2>{t('tabSettings')}</h2>
+      </div>
+
+      {/* Блок 1: Аккаунт */}
+      <div className="settings-section">
+        <h3>{t('setAccount')}</h3>
+        <div className="settings-row">
+          <div className="settings-info">
+            <User size={20} color="#868e96" />
+            <span>{session.user.email}</span>
+          </div>
+          <button className="btn-outline-hard" style={{padding: '8px 16px', display: 'flex', gap: '8px'}} onClick={() => supabase.auth.signOut()}>
+            <LogOut size={16} /> {t('logout')}
+          </button>
+        </div>
+      </div>
+
+      {/* Блок 2: Интерфейс */}
+      <div className="settings-section">
+        <h3>{t('setInterface')}</h3>
+        <div className="settings-row">
+          <div className="settings-info">
+            <Globe size={20} color="#868e96" />
+            <span>{t('setLang')}</span>
+          </div>
+          <select className="settings-select" value={lang} onChange={(e) => setLang(e.target.value)}>
+            <option value="uk">🇺🇦 Українська</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="en">🇬🇧 English</option>
+          </select>
+        </div>
+        <div className="settings-row">
+          <div className="settings-info">
+            <Volume2 size={20} color="#868e96" />
+            <span>{t('setSpeed')} ({speechRate}x)</span>
+          </div>
+          <input type="range" min="0.5" max="1.5" step="0.1" value={speechRate} onChange={(e) => setSpeechRate(parseFloat(e.target.value))} style={{width: '120px'}} />
+        </div>
+      </div>
+
+      {/* Блок 3: Данные (Экспорт/Импорт) */}
+      <div className="settings-section">
+        <h3>{t('setData')}</h3>
+        <div className="stats-grid" style={{marginTop: '16px'}}>
+          <div className="hard-words-section" style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px'}}>
+              <div style={{padding: '12px', background: '#e7f5ff', borderRadius: '12px', color: '#1864ab'}}><Download size={24} /></div>
+              <div><h3 style={{margin: 0, color: '#212529'}}>{t('setExportTitle')}</h3></div>
+            </div>
+            <p style={{color: '#868e96', fontSize: '14px', marginBottom: '24px', lineHeight: 1.5}}>{t('setExportDesc')}</p>
+            <button className="btn-primary" onClick={handleExport} disabled={loading} style={{marginTop: 'auto', width: '100%'}}>
+              {loading ? '...' : t('btnExport')}
+            </button>
+          </div>
+
+          <div className="hard-words-section" style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px'}}>
+              <div style={{padding: '12px', background: '#ebfbee', borderRadius: '12px', color: '#2b8a3e'}}><Upload size={24} /></div>
+              <div><h3 style={{margin: 0, color: '#212529'}}>{t('setImportTitle')}</h3></div>
+            </div>
+            <p style={{color: '#868e96', fontSize: '14px', marginBottom: '24px', lineHeight: 1.5}}>{t('setImportDesc')}</p>
+            <label className="btn-outline" style={{marginTop: 'auto', width: '100%', textAlign: 'center', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1}}>
+              {loading ? '...' : t('btnImport')}
+              <input type="file" accept=".csv" onChange={handleImport} disabled={loading} style={{ display: 'none' }} />
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
 // =========================================
 // АВТОРИЗАЦИЯ
 // =========================================
@@ -848,14 +992,7 @@ function Auth({ t, lang, setLang }) {
         <div style={{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: '4px', alignItems: 'center' }}>
           <Globe size={16} color="#868e96" />
           <select value={lang} onChange={(e) => setLang(e.target.value)} style={{ border: 'none', background: 'transparent', outline: 'none', color: '#495057', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>
-            <option value="uk">🇺🇦 Укр</option>
-            <option value="ru">🇷🇺 Рус</option>
-            <option value="en">🇬🇧 Eng</option>
-            <option value="es">🇪🇸 Esp</option>
-            <option value="fr">🇫🇷 Fra</option>
-            <option value="de">🇩🇪 Deu</option>
-            <option value="ja">🇯🇵 日本語</option>
-            <option value="zh">🇨🇳 中文</option>
+            <option value="uk">🇺🇦 Укр</option><option value="ru">🇷🇺 Рус</option><option value="en">🇬🇧 Eng</option>
           </select>
         </div>
         <h2>{isLogin ? t('authLog') : t('authReg')}</h2>
