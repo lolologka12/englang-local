@@ -1,32 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
-import { Plus, X, BookOpen, BrainCircuit, Filter, BarChart3, Trash2, Search, Volume2, Gauge, Globe, Languages, ArrowRightLeft, ArrowDownToLine, Clock, Flame, Settings, Download, Upload, LogOut, User } from 'lucide-react';
+import { Plus, X, BookOpen, BrainCircuit, Filter, BarChart3, Trash2, Search, Volume2, Gauge, Globe, Languages, ArrowRightLeft, ArrowDownToLine, Clock, Flame, Settings, Download, Upload, LogOut, User, Eye, EyeOff } from 'lucide-react';
 import './App.css';
 
 // =========================================
-// СЛОВАРЬ ПЕРЕВОДОВ ИНТЕРФЕЙСА
+// СЛОВАРЬ ПЕРЕВОДОВ ИНТЕРФЕЙСА (ТОЛЬКО УКР И АНГЛ)
 // =========================================
 const TRANSLATIONS = {
-  ru: {
-    appTitle: "Мой Словарь", tabDict: "Словарь", tabTrain: "Тренировка", tabStats: "Статистика", tabTrans: "Переводчик", tabSettings: "Настройки", logout: "Выйти",
-    search: "Найти слово...", filterAll: "Все темы", sortNew: "Новые", sortEn: "А-Я (Англ)", sortRu: "А-Я (Перевод)",
-    emptyDict: "Ничего не найдено.", newWord: "Новое слово", phEng: "Английское слово*", phTrans: "Перевод*", phPhrase: "Пример (необязательно)",
-    phTheme: "Тема (необязательно)", btnAdd: "Добавить", btnSave: "Сохранить", btnLoading: "Загрузка...", btnPhoto: "Фото", customImg: "Или прямая ссылка",
-    editTitle: "Характеристика", confirmDel: "Точно удалить слово?", errExists: "уже есть!", errEngReq: "Впиши слово на английском!", errImg: "Ошибка поиска",
-    trainModeEnRu: "🇬🇧 Англ ➔ Перевод", trainModeRuEn: "🇷🇺 Перевод ➔ Англ", trainModeRand: "🔀 Вперемешку", trainLeft: "Осталось:",
-    clickFlip: "Нажми, чтобы перевернуть", rateAgain: "Снова", rateHard: "Трудно", rateGood: "Хорошо", rateEasy: "Легко",
-    finishTitle: "Отличная работа!", finishAll: "Тренировать ВСЕ", finishNew: "На сегодня", trainThemes: "Тренировка по темам:",
-    statTitle: "Твой прогресс", statWords: "Слов:", statLearned: "Выучено навсегда (>21 дня)", statLearning: "В процессе", statNew: "Новые",
-    hardTitle: "Самые сложные слова", hardSubAll: "Слова, на которых ты нажимал 'Снова'", hardSubTheme: "Сложные слова в теме", hardEmpty: "Отличная работа, сложных слов нет!",
-    themeAnalysis: "Анализ тем", themeSub: "Уровень освоения", tGood: "Хорошо", tOk: "Средне", tHard: "Сложно",
-    authLog: "Вход", authReg: "Регистрация", authEmail: "Email", authPass: "Пароль", authBtnLog: "Войти", authBtnReg: "Создать", authTogReg: "Регистрация", authTogLog: "Вход", authOk: "Успешно! Теперь нажми 'Войти'",
-    trPlaceholder: "Введите текст...", trTranslateBtn: "Перевести", trAddDictBtn: "Добавить в словарь", errTrans: "Ошибка перевода",
-    timerPrefix: "Новые карточки появятся через:", trainHardBtn: "Тренировать сложные", sessionTitle: "Итоги тренировки", sessionKnown: "Успешно:", sessionHard: "Ошибки:", sessionReview: "Слова для повторения:", btnClose: "Закрыть",
-    setExportTitle: "Резервная копия (Экспорт)", setExportDesc: "Скачать все слова в формате CSV. Будет скачано 2 файла: технический бекап и простой список для чтения.", btnExport: "Скачать слова",
-    setImportTitle: "Загрузить слова (Импорт)", setImportDesc: "Загрузить список слов из технического CSV файла (бекапа).", btnImport: "Выбрать файл CSV", importOk: "Успешно загружено слов:", importErr: "Ошибка загрузки", importFmtErr: "Неверный формат файла",
-    exportWarn: "Внимание! Сейчас начнется скачивание ДВУХ файлов:\n1. Полный бекап базы (для импорта).\n2. Чистый словарь (для чтения в Excel).\n\nРазрешить скачивание?",
-    setAccount: "Аккаунт", setInterface: "Интерфейс", setLang: "Язык приложения", setSpeed: "Скорость озвучки", setData: "Управление данными"
-  },
   uk: {
     appTitle: "Мій Словник", tabDict: "Словник", tabTrain: "Тренування", tabStats: "Статистика", tabTrans: "Перекладач", tabSettings: "Налаштування", logout: "Вийти",
     search: "Знайти слово...", filterAll: "Всі теми", sortNew: "Нові", sortEn: "А-Я (Англ)", sortRu: "А-Я (Переклад)",
@@ -73,7 +53,9 @@ export default function App() {
   const [session, setSession] = useState(null);
   const [activeTab, setActiveTab] = useState('dictionary');
   const [speechRate, setSpeechRate] = useState(0.8);
-  const [lang, setLang] = useState(() => localStorage.getItem('appLang') || 'ru');
+  
+  // По умолчанию ставим украинский
+  const [lang, setLang] = useState(() => localStorage.getItem('appLang') || 'uk');
   const [prefilledWordData, setPrefilledWordData] = useState(null);
 
   const [dueCount, setDueCount] = useState(0);
@@ -101,7 +83,7 @@ export default function App() {
 
   useEffect(() => { fetchGlobalStats(); }, [session, activeTab]);
 
-  const safeLang = TRANSLATIONS[lang] ? lang : 'en';
+  const safeLang = TRANSLATIONS[lang] ? lang : 'uk';
   const t = (key) => TRANSLATIONS[safeLang][key] || TRANSLATIONS['en'][key] || key;
 
   const handleTransferToDict = (eng, trans) => {
@@ -112,7 +94,6 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* ШАПКА ТЕПЕРЬ ЧИСТАЯ, ВСЁ УПРАВЛЕНИЕ В НАСТРОЙКАХ */}
       <header className="main-header" style={{ borderBottom: 'none', marginBottom: '16px' }}>
         <div className="logo">
           <BookOpen size={28} />
@@ -120,7 +101,6 @@ export default function App() {
         </div>
       </header>
       
-      {/* НАВИГАЦИЯ СРАЗУ ПОД ЛОГОТИПОМ */}
       <div className="tabs" style={{ marginBottom: '24px', width: '100%', maxWidth: '100%' }}>
         <button className={`tab-btn ${activeTab === 'dictionary' ? 'active' : ''}`} onClick={() => setActiveTab('dictionary')}>
           <BookOpen size={18} /> <span className="tab-text">{t('tabDict')}</span>
@@ -145,7 +125,6 @@ export default function App() {
         {activeTab === 'training' && <Training session={session} speechRate={speechRate} t={t} nextReviewDate={nextReviewDate} onUpdateGlobal={fetchGlobalStats} />}
         {activeTab === 'statistics' && <Statistics session={session} t={t} />}
         {activeTab === 'translator' && <Translator t={t} onTransfer={handleTransferToDict} />}
-        {/* ПЕРЕДАЕМ В НАСТРОЙКИ УПРАВЛЕНИЕ ЯЗЫКОМ И СКОРОСТЬЮ */}
         {activeTab === 'settings' && <SettingsTab session={session} t={t} lang={lang} setLang={setLang} speechRate={speechRate} setSpeechRate={setSpeechRate} onUpdateGlobal={fetchGlobalStats} />}
       </main>
     </div>
@@ -393,7 +372,7 @@ function Dictionary({ session, speechRate, t, prefilledWordData, setPrefilledWor
 }
 
 // =========================================
-// 2. ТРЕНИРОВКА 
+// 2. ТРЕНИРОВКА (ДОБАВЛЕНА КНОПКА СКРЫТИЯ КАРТИНОК)
 // =========================================
 function Training({ session, speechRate, t, nextReviewDate, onUpdateGlobal }) {
   const [dueWords, setDueWords] = useState([]);
@@ -406,6 +385,9 @@ function Training({ session, speechRate, t, nextReviewDate, onUpdateGlobal }) {
   const [directionMode, setDirectionMode] = useState('eng-to-ru');
   const [currentCardIsEngFront, setCurrentCardIsEngFront] = useState(true);
   
+  // Новое состояние: показывать ли картинку
+  const [showImages, setShowImages] = useState(true);
+
   const [timeLeft, setTimeLeft] = useState('');
   const [sessionLog, setSessionLog] = useState([]);
   const [showSessionStats, setShowSessionStats] = useState(false);
@@ -512,6 +494,16 @@ function Training({ session, speechRate, t, nextReviewDate, onUpdateGlobal }) {
         <select style={{ flex: 1 }} value={directionMode} onChange={(e) => setDirectionMode(e.target.value)}>
           <option value="eng-to-ru">{t('trainModeEnRu')}</option><option value="ru-to-eng">{t('trainModeRuEn')}</option><option value="random">{t('trainModeRand')}</option>
         </select>
+        
+        {/* КНОПКА ТУМБЛЕР ДЛЯ КАРТИНОК */}
+        <button 
+          className="btn-icon-small" 
+          onClick={() => setShowImages(!showImages)}
+          style={{ background: showImages ? '#f1f3f5' : '#fff5f5', color: showImages ? '#495057' : '#e03131', border: `1px solid ${showImages ? '#dee2e6' : '#ffc9c9'}` }}
+        >
+          {showImages ? <Eye size={18} /> : <EyeOff size={18} />}
+        </button>
+
         <select style={{ flex: 1 }} value={trainingMode === 'theme' ? currentTheme : trainingMode} onChange={(e) => { const val = e.target.value; if (['due', 'all', 'hard'].includes(val)) fetchWords(val); else fetchWords('theme', val); }}>
           <option value="due">📅 {t('finishNew')}</option><option value="all">📚 {t('finishAll')}</option><option value="hard">🔥 {t('trainHardBtn')}</option>
           {allThemes.length > 0 && <optgroup label={t('trainThemes')}>{allThemes.map(th => <option key={th} value={th}>{th}</option>)}</optgroup>}
@@ -547,7 +539,8 @@ function Training({ session, speechRate, t, nextReviewDate, onUpdateGlobal }) {
       {topControls}
       <div className={`flashcard-container ${isFlipped ? 'flipped' : ''}`} onClick={() => setIsFlipped(true)}>
         <div className="flashcard-front">
-          {currentWord.image_url && <div className="card-image" style={{ backgroundImage: `url(${currentWord.image_url})` }}></div>}
+          {/* КАРТИНКА ПОКАЗЫВАЕТСЯ ТОЛЬКО ЕСЛИ SHOWIMAGES = TRUE */}
+          {showImages && currentWord.image_url && <div className="card-image" style={{ backgroundImage: `url(${currentWord.image_url})` }}></div>}
           <div className="card-content-front">
             <h2>{frontText}</h2>
             {currentCardIsEngFront && <button className="btn-audio-large" onClick={(e) => playAudio(currentWord.english_word, e)}><Volume2 size={28} color="#4dabf7" /></button>}
@@ -702,11 +695,12 @@ function Translator({ t, onTransfer }) {
   const [sourceText, setSourceText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
   const [sourceLang, setSourceLang] = useState('en');
-  const [targetLang, setTargetLang] = useState('ru');
+  const [targetLang, setTargetLang] = useState('uk');
   const [isTranslating, setIsTranslating] = useState(false);
 
+  // ВЕРНУЛ РУССКИЙ ТОЛЬКО ДЛЯ ПЕРЕВОДЧИКА
   const langs = [
-    { code: 'en', name: 'English' }, { code: 'ru', name: 'Русский' }, { code: 'uk', name: 'Українська' }, 
+    { code: 'en', name: 'English' }, { code: 'uk', name: 'Українська' }, { code: 'ru', name: 'Русский' },
     { code: 'es', name: 'Español' }, { code: 'fr', name: 'Français' }, { code: 'de', name: 'Deutsch' },
     { code: 'ja', name: '日本語' }, { code: 'zh', name: '中文' }
   ];
@@ -758,12 +752,11 @@ function Translator({ t, onTransfer }) {
 }
 
 // =========================================
-// 5. НАСТРОЙКИ (ЭКСПОРТ И ИМПОРТ) С ДВОЙНЫМ СКАЧИВАНИЕМ И НОВОЙ ЛОГИКОЙ
+// 5. НАСТРОЙКИ (ЭКСПОРТ И ИМПОРТ) 
 // =========================================
 function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onUpdateGlobal }) {
   const [loading, setLoading] = useState(false);
 
-  // --- ЭКСПОРТ В 2 CSV ФАЙЛА (С ИСПРАВЛЕНИЕМ КОДИРОВКИ EXCEL) ---
   const handleExport = async () => {
     if (!window.confirm(t('exportWarn'))) return;
     
@@ -774,10 +767,8 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
       alert("Error fetching data"); setLoading(false); return;
     }
 
-    // \uFEFF - это BOM (Byte Order Mark). Он заставляет Excel корректно понимать кириллицу (UTF-8).
     const BOM = "\uFEFF"; 
 
-    // Заголовки для двух файлов
     let csvBackup = "english_word,translation,example_phrase,theme,image_url,interval,ease_factor,next_review_date\n";
     let csvSimple = "Слово,Перевод,Пример,Тема\n"; 
     
@@ -791,14 +782,12 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
         return stringVal;
       };
 
-      // Строка для технического бекапа
       csvBackup += [
         escapeCsv(row.english_word), escapeCsv(row.translation), escapeCsv(row.example_phrase),
         escapeCsv(row.theme), escapeCsv(row.image_url),
         row.interval || 0, row.ease_factor || 2.5, row.next_review_date || ''
       ].join(',') + "\n";
 
-      // Строка для чистого словаря
       csvSimple += [
         escapeCsv(row.english_word), escapeCsv(row.translation), 
         escapeCsv(row.example_phrase), escapeCsv(row.theme)
@@ -818,17 +807,14 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
 
     const dateStr = new Date().toISOString().split('T')[0];
     
-    // Скачиваем первый файл (Технический)
     downloadFile(csvBackup, `dictionary_backup_${dateStr}.csv`);
     
-    // Задержка 500мс для скачивания второго файла (чтобы браузер не заблокировал)
     setTimeout(() => {
       downloadFile(csvSimple, `my_words_list_${dateStr}.csv`);
       setLoading(false);
     }, 500);
   };
 
-  // --- ИМПОРТ ИЗ CSV ---
   const handleImport = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -882,7 +868,7 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
         const { error } = await supabase.from('words').insert(newWordsToInsert);
         if (error) { alert(t('importErr')); } else { alert(`${t('importOk')} ${newWordsToInsert.length}`); onUpdateGlobal(); }
       } else {
-        alert("0 новых слов найдено (возможно, все уже есть в словаре).");
+        alert("0 нових слів знайдено (можливо, всі вже є у словнику).");
       }
       setLoading(false); e.target.value = null; 
     };
@@ -895,7 +881,6 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
         <h2>{t('tabSettings')}</h2>
       </div>
 
-      {/* Блок 1: Аккаунт */}
       <div className="settings-section">
         <h3>{t('setAccount')}</h3>
         <div className="settings-row">
@@ -909,7 +894,6 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
         </div>
       </div>
 
-      {/* Блок 2: Интерфейс */}
       <div className="settings-section">
         <h3>{t('setInterface')}</h3>
         <div className="settings-row">
@@ -917,9 +901,9 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
             <Globe size={20} color="#868e96" />
             <span>{t('setLang')}</span>
           </div>
+          {/* УБРАЛИ РУССКИЙ ИЗ ВЫБОРА ЯЗЫКОВ */}
           <select className="settings-select" value={lang} onChange={(e) => setLang(e.target.value)}>
             <option value="uk">🇺🇦 Українська</option>
-            <option value="ru">🇷🇺 Русский</option>
             <option value="en">🇬🇧 English</option>
           </select>
         </div>
@@ -932,7 +916,6 @@ function SettingsTab({ session, t, lang, setLang, speechRate, setSpeechRate, onU
         </div>
       </div>
 
-      {/* Блок 3: Данные (Экспорт/Импорт) */}
       <div className="settings-section">
         <h3>{t('setData')}</h3>
         <div className="stats-grid" style={{marginTop: '16px'}}>
@@ -992,7 +975,7 @@ function Auth({ t, lang, setLang }) {
         <div style={{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: '4px', alignItems: 'center' }}>
           <Globe size={16} color="#868e96" />
           <select value={lang} onChange={(e) => setLang(e.target.value)} style={{ border: 'none', background: 'transparent', outline: 'none', color: '#495057', cursor: 'pointer', fontSize: '14px', fontWeight: '600' }}>
-            <option value="uk">🇺🇦 Укр</option><option value="ru">🇷🇺 Рус</option><option value="en">🇬🇧 Eng</option>
+            <option value="uk">🇺🇦 Укр</option><option value="en">🇬🇧 Eng</option>
           </select>
         </div>
         <h2>{isLogin ? t('authLog') : t('authReg')}</h2>
